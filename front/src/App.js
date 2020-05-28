@@ -1,10 +1,19 @@
 import React from 'react';
-import Login from './pages/Login';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import Routes from './router';
+import Header from './components/Header';
 
 function App() {
   return (
     <div className="App">
-      <Login />
+      <Header />
+      <Router>
+        <Switch>
+          {Routes.map(r => (
+            <Route {...r} key={r.path} />
+          ))}
+        </Switch>
+      </Router>
     </div>
   );
 }
