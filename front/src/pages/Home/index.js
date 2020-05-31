@@ -5,13 +5,21 @@ import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
 import Loader from '../../components/Loader'
+import Modal from 'react-bootstrap/Modal';
 
 const Home = () => {
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [student, setStudent] = useState({}); 
 
   const getRandomColor = () => 
     `#${Math.floor(Math.random()*16777215).toString(16)}`;
+
+  const selectStudent = (student) => setStudent(student);
+
+  const clearStudent = () => setStudent({});
+
+  const shouldShow = () => Boolean(student.name);
 
   const getStudents = () => {
     setTimeout(() => {
@@ -43,8 +51,6 @@ const Home = () => {
     getStudents();
   }
 
-  console.log(students)
-
   return (
     <div className="search">
       <Form onSubmit={searchStudent} className="search__form">
@@ -57,11 +63,12 @@ const Home = () => {
           </Button>
         </Row>
       </Form>
+
       <div className="search__list">
         {loading ? (
           <Loader />
         ) : students.map(s => (
-            <button key={s.cpf} className="list__item">
+            <button onClick={() => selectStudent(s)} key={s.cpf} className="list__item">
               <div className="item__info">
                 <p className="info__main">{s.name}</p>
                 <p className="info__secondary">{s.course}</p>
@@ -72,6 +79,43 @@ const Home = () => {
             </button>
           ))}
       </div>
+
+      <Modal show={shouldShow()} onHide={clearStudent}>
+        <Modal.Header closeButton>
+          <div 
+            className="item__avatar"
+            style={{ backgroundColor: getRandomColor() }}
+          >
+            {student.name && student.name[0]}
+          </div>
+        </Modal.Header>
+        <Modal.Body className="modal__body">
+          <Modal.Title>{student.name}</Modal.Title>
+          <div className="info__container">
+            <p>
+              <label className="info__label">CPF: </label>
+              {student.cpf}
+            </p>
+            <p>
+              <label className="info__label">Escola Anterior: </label>
+              {student.university}
+            </p>
+            <p>
+              <label className="info__label">Curso: </label>
+              {student.course}
+            </p>
+            <p>
+              <label className="info__label">Endereço: </label>
+              {student.address}
+            </p>
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={clearStudent}>
+            Fechar
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   )
 };
