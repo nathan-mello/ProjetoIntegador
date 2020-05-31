@@ -1,0 +1,22 @@
+.signup {
+  padding: 2% 5%;
+}
+
+.signup__title h1 {
+  margin: 0;
+  padding: 0 0.8rem;
+  margin-bottom: 2rem;
+}
+
+.instructions {
+  border: 1px solid #ccc;
+  padding: 2% 5%;
+  border-radius: 8px;
+  box-shadow: none;
+}
+
+.instructions legend {
+  width: auto;
+  padding: 0 10px;
+  border-bottom: none;
+}

@@ -3,7 +3,7 @@ import Button from 'react-bootstrap/Button';
 import './styles.css';
 
 const Header = () => {
-  const showSignOut = () => !window.location.pathname.includes('/login')
+  const showSignOut = () => window.location.pathname.includes('/home')
 
   const signOut = () => {
     window.location.href = '/login';

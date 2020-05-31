@@ -1,5 +1,9 @@
 .search {
-  padding: 5%;
+  padding: 2% 5%;
+}
+
+.search h1 {
+  text-align: center;
 }
 
 .search__form {

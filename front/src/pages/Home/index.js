@@ -53,6 +53,7 @@ const Home = () => {
 
   return (
     <div className="search">
+      <h1>Encontre alunos</h1>
       <Form onSubmit={searchStudent} className="search__form">
         <Row>
           <Col>
