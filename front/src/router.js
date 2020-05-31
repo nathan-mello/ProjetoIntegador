@@ -1,9 +1,16 @@
 import Login from './pages/Login';
+import Home from './pages/Home';
 
 const Routes = [
   {
-    path: '/',
+    path: '/login',
+    exact: true,
     component: Login
+  },
+  {
+    path: '/home',
+    exact: true,
+    component: Home
   }
 ];
 

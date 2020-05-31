@@ -2,13 +2,21 @@ import React, { useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import './styles.css';
+import { useHistory } from 'react-router-dom';
 
 const Login = () => {
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
+  const history = useHistory();
+
+  const submit = (e) => {
+    e.preventDefault();
+    history.push('/home');
+  }
+
   return (
     <div id="login">
-      <Form>
+      <Form onSubmit={submit}>
         <Form.Group>
           <Form.Label>Email</Form.Label>
           <Form.Control
