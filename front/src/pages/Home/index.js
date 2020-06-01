@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Form from 'react-bootstrap/Form';
 import './styles.css';
 import Col from 'react-bootstrap/Col';
@@ -6,14 +6,17 @@ import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
 import Loader from '../../components/Loader'
 import Modal from 'react-bootstrap/Modal';
+import { getAllStudents, getStudentByName } from '../../api';
+import { getValuesFromForm } from '../../utils';
 
 const Home = () => {
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(false);
   const [student, setStudent] = useState({}); 
 
-  const getRandomColor = () => 
-    `#${Math.floor(Math.random()*16777215).toString(16)}`;
+  const getRandomColor = () => {
+    return `#${Math.floor(Math.random()*16777215).toString(16)}`;
+  }; 
 
   const selectStudent = (student) => setStudent(student);
 
@@ -21,35 +24,33 @@ const Home = () => {
 
   const shouldShow = () => Boolean(student.name);
 
-  const getStudents = () => {
-    setTimeout(() => {
-      setStudents([
-        {
-          name: 'Diogo Mafra Queiroga Barroso Magalhães',
-          cpf: '133.094.947-34',
-          university: 'Universidade Federal de Uberlândia',
-          course: 'Ciência da Computação',
-          address: 'Avenida Afonso Pena 1456, Bairro Aparecida' 
-        },
-
-        {
-          name: 'Luisa Andrade Martins',
-          cpf: '111.092.127-32',
-          university: 'ESAMC',
-          course: 'Matemática',
-          address: 'Avenida Afonso Pena 1456, Bairro Aparecida' 
-        }
-      ])
-      setLoading(false)
-    }, 3000);
-    
-  }
-
-  const searchStudent = (e) => {
+  const searchStudent = async (e) => {
     e.preventDefault();
+    const input = getValuesFromForm(e.target)[0];
     setLoading(true);
-    getStudents();
+    const response = await getStudentByName(input);
+    setLoading(false);
+    if (response.length) {
+      setStudents(response);
+    } else {
+      setStudents([]);
+    }
   }
+
+  const fetchAllStudents = async () => {
+    setLoading(true);
+    const allStudents = await getAllStudents();
+    setLoading(false);
+    if (allStudents.length) {
+      setStudents(allStudents);
+    } else {
+      console.log(allStudents);
+    }
+  }
+
+  useEffect(() => {
+    fetchAllStudents();
+  }, [])
 
   return (
     <div className="search">
@@ -68,17 +69,21 @@ const Home = () => {
       <div className="search__list">
         {loading ? (
           <Loader />
-        ) : students.map(s => (
-            <button onClick={() => selectStudent(s)} key={s.cpf} className="list__item">
-              <div className="item__info">
-                <p className="info__main">{s.name}</p>
-                <p className="info__secondary">{s.course}</p>
-              </div>
-              <div className="item__avatar" style={{ backgroundColor: getRandomColor() }}>
-                {s.name[0]}
-              </div>
-            </button>
-          ))}
+        ) : students.length ? students.map(s => (
+              <button onClick={() => selectStudent(s)} key={s.cpf} className="list__item">
+                <div className="item__info">
+                  <p className="info__main">{s.name}</p>
+                  <p className="info__secondary">{s.course}</p>
+                </div>
+                <div className="item__avatar" style={{ backgroundColor: getRandomColor() }}>
+                  {s.name[0]}
+                </div>
+              </button>
+            )
+          ) : (
+            <h4>Nenhum aluno encontrado</h4>
+          )
+        }
       </div>
 
       <Modal show={shouldShow()} onHide={clearStudent}>
@@ -99,7 +104,7 @@ const Home = () => {
             </p>
             <p>
               <label className="info__label">Escola Anterior: </label>
-              {student.university}
+              {student.previousUniversity}
             </p>
             <p>
               <label className="info__label">Curso: </label>
@@ -109,7 +114,22 @@ const Home = () => {
               <label className="info__label">Endereço: </label>
               {student.address}
             </p>
-          </div>
+            <p>
+              <label className="info__label">Telefone: </label>
+              {student.phoneNumber}
+            </p>
+            <p>
+              <label className="info__label">Arquivos: </label> 
+              {student?.documents?.map(d => (
+                <a 
+                  key={d.id}
+                  download={d.name} 
+                  href={`data:image/png;base64,${d.file}`}>
+                  {d.name}
+                </a>
+              ))}
+            </p>
+        </div>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={clearStudent}>
