@@ -1,17 +1,26 @@
 import React, { useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import './styles.css';
+import { login as loginPost } from '../../api';
 import { useHistory } from 'react-router-dom';
+import './styles.css';
 
 const Login = () => {
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
   const history = useHistory();
 
-  const submit = (e) => {
+  const submit = async (e) => {
     e.preventDefault();
-    history.push('/home');
+    setLoading(true)
+    const response = await loginPost({ email: login, password })
+    setLoading(false)
+    if (response === 'ok') {
+      history.push('/home');
+    } else {
+      alert(response);
+    }
   }
 
   return (
@@ -37,8 +46,8 @@ const Login = () => {
             onChange={e => setPassword(e.target.value)}
           />
         </Form.Group>
-        <Button variant="primary" type="submit" block>
-          Entrar
+        <Button disabled={loading} variant="primary" type="submit" block>
+          {loading ? 'Carregando...' : 'Entrar'}
         </Button>
       </Form>
     </div>
