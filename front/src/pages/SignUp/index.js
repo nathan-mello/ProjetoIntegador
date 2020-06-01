@@ -55,6 +55,11 @@ const SignUp = () => {
     return 'Falha ao validar identidade!';
   }
 
+  const submitForm = (e) => {
+    e.preventDefault();
+
+  }
+
   return (
     <div className="signup">
       <Row className="signup__title">
@@ -133,21 +138,7 @@ const SignUp = () => {
         </Col>
 
         <Col>
-          <fieldset className="instructions">
-            <legend>Instruções</legend>
-            <p>Por favor, preencha as informações ao lado e faça o upload dos seguintes arquivos:</p>
-            <ul>
-              <li>RG ou CNH</li>
-              <li>Comprovante de endereço</li>
-              <li>Histórico de matérias cursadas</li>
-              <li>Histórico do Ensino Médio</li>
-            </ul>
-            <p>Nomeie os arquivos da seguinte maneira:</p>
-            <ul>
-              <li>RG ou CNH: <strong>identidade.png</strong></li>
-            </ul>
-            <p>Os demais documentos nomeie como quiser.</p>
-          </fieldset>
+          <iframe className="vr" title="vr" src="http://localhost:8081/index.html" />
         </Col>
       </Row>
 
