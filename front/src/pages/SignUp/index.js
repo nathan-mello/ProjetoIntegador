@@ -24,6 +24,7 @@ const SignUp = () => {
     await worker.initialize('por');
     const { data: { text } } = await worker.recognize(file);
     setOcr(text);
+    return getOcrResult(text);
   }
 
   const onChangeFile = (e) => {
@@ -33,18 +34,19 @@ const SignUp = () => {
 
   const validateOcr = (file) => {
     setShow(true);
-    return doOCR(file)
+    return doOCR(file);
   }
 
   const closeModal = () => setShow(false);
 
-  const getOcrResult = () => {
+  const getOcrResult = (text = '') => {
     const names = name.split(' ');
-    return Boolean(names.filter(n => ocr.toLowerCase().includes(n.toLowerCase())).length);
+    const result = names.filter(n => text.toLowerCase().includes(n.toLowerCase())).length
+    return Boolean(result);
   };
 
   const displayOcrResult = () => {
-    if (getOcrResult()) {
+    if (getOcrResult(ocr)) {
       return 'Identidade validada!'
     }
     return 'Falha ao validar identidade!';
@@ -59,7 +61,12 @@ const SignUp = () => {
     if (identityFile) {
       setLoading(true)
       validateOcr(identityFile)
-        .then(() => createStudent(payload))
+        .then(result => {
+          if (result) {
+            return createStudent(payload);
+          }
+          throw new Error();
+        })
         .then(() => setLoading(false))
         .catch(() => {
           setShow(false);
