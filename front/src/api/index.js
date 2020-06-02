@@ -19,4 +19,9 @@ export const getStudentByName = (name) => {
             .then(res => res.data);
 }
 
+export const createStudent = (student) => {
+  return api.post('/student/create', student)
+            .then(res => res.data);
+}
+
 export default api;

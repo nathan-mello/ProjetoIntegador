@@ -48,9 +48,17 @@ const Home = () => {
     }
   }
 
+  const getDocumentHref = ({ name, file }) => {
+    const isImage = name.includes('png') || name.includes('jpg') || name.includes('jpeg');
+    if (isImage) {
+      return `data:image/png;base64,${file}`;
+    }
+    return `data:application/pdf;base64,${file}`;
+  }
+
   useEffect(() => {
     fetchAllStudents();
-  }, [])
+  }, []);
 
   return (
     <div className="search">
@@ -124,7 +132,7 @@ const Home = () => {
                 <a 
                   key={d.id}
                   download={d.name} 
-                  href={`data:image/png;base64,${d.file}`}>
+                  href={getDocumentHref(d)}>
                   {d.name}
                 </a>
               ))}
